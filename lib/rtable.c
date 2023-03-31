@@ -1,4 +1,4 @@
-#include "arp.h"
+#include "rtable.h"
 
 TNode new_trie()
 {
@@ -29,7 +29,7 @@ void insert(TNode root, RTableEntry data)
   // 11111111.11111111.00000000.00000000
   // 255.255.255.0
   // 11111111.11111111.11111111.00000000
-
+  
   // calculate Longest Prefix Mask
   const u_int32_t LPM = data->prefix & data->mask; // 11111111.11111111.00000000.00000000
 

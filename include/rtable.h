@@ -3,6 +3,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "lib.h"
+
+#define MAX_RTABLE_ENTRIES 100000
 
 typedef struct route_table_entry *RTableEntry;
 
@@ -10,7 +13,7 @@ struct TrieNode
 {
   struct TrieNode *left;
   struct TrieNode *right;
-  struct ARPTableEntry *data;
+  RTableEntry data;
   int flag;
 };
 typedef struct TrieNode *TNode;

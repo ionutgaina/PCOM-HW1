@@ -1,7 +1,7 @@
 #include "queue.h"
 #include "lib.h"
 #include "protocols.h"
-#include "arp.h"
+#include "rtable.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,6 +9,16 @@ int main(int argc, char *argv[])
 
 	// Do not modify this line
 	init(argc - 2, argv + 2);
+
+	struct route_table_entry *rtable = malloc(sizeof(struct route_table_entry) * MAX_RTABLE_ENTRIES);
+	int rtable_len = read_rtable(argv[1], rtable);
+
+	TNode rtable_trie = new_trie();
+
+	for (int i = 0; i < rtable_len; i++)
+	{
+		insert(rtable_trie, &rtable[i]);
+	}
 
 	while (1)
 	{
