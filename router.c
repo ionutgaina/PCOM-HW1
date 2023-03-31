@@ -10,26 +10,6 @@ int main(int argc, char *argv[])
 	// Do not modify this line
 	init(argc - 2, argv + 2);
 
-	printf("hello");
-	// test arp tree
-	TNode root = new_trie();
-	ARPEntry entry = malloc(sizeof(struct ARPTableEntry));
-
-	// 192.1.4.0
-	entry->prefix = 0xC0010400;
-
-	// 192.1.4.2
-	entry->next_hop = 0xC0010402;
-
-	// 255.255.255.0
-	entry->mask = 0xFFFFFF00;
-
-	// 1
-	entry->interface = 1;
-	printf("hello\n");
-	insert(root, entry);
-	printf("\n");
-
 	while (1)
 	{
 		int interface;

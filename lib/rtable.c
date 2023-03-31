@@ -10,14 +10,14 @@ TNode new_trie()
   return node;
 }
 
-TNode new_trie_node(ARPEntry data)
+TNode new_trie_node(RTableEntry data)
 {
   TNode node = new_trie();
   node->data = data;
   return node;
 }
 
-void insert(TNode root, ARPEntry data)
+void insert(TNode root, RTableEntry data)
 {
   if (root == NULL)
   {
@@ -69,7 +69,7 @@ void insert(TNode root, ARPEntry data)
   root->flag = 1;
 }
 
-ARPEntry search(TNode root, u_int32_t address)
+RTableEntry search(TNode root, u_int32_t address)
 {
   if (root == NULL)
   {
@@ -77,7 +77,7 @@ ARPEntry search(TNode root, u_int32_t address)
   }
 
   u_int32_t bit = 1u << 31;
-  ARPEntry data = NULL;
+  RTableEntry data = NULL;
 
   while (bit)
   {
