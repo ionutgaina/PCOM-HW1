@@ -1,2 +1,10 @@
 .vscode
 
+lib/*.o
+*.o
+
+# Executables
+router
+
+# Other files
+__pycache__
