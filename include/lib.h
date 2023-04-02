@@ -5,9 +5,23 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <string.h>
 
 #define MAX_PACKET_LEN 1600
 #define ROUTER_NUM_INTERFACES 3
+#define MAX_ARP_TABLE_ENTRIES 100
+
+// Ethernet
+#define IPv4 0x0800
+#define ARP 0x0806
+
+// ICMP
+#define TIME_EXCEEDED 11
+#define DEST_UNREACHABLE 3
+
+
 
 int send_to_link(int interface, char *frame_data, size_t length);
 

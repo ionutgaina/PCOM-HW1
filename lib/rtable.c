@@ -105,7 +105,7 @@ RTableEntry search(TNode root, u_int32_t address)
     }
     bit >>= 1;
   }
-  return NULL;
+  return data;
 }
 
 void free_trie(TNode root)
