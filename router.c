@@ -43,14 +43,12 @@ int check_checksum(char *packet, int len)
     return 0;
 }
 
-void send_packet(struct icmphdr *icmp_hdr, struct iphdr *ip_hdr, int interface, char *packet, int len)
-{
-    // icmp_hdr->checksum = 0;
-    // icmp_hdr->checksum = htons(checksum((void *)icmp_hdr, sizeof(struct icmphdr)));
-    ip_hdr->check = 0;
-    ip_hdr->check = htons(checksum((void *)ip_hdr, sizeof(struct iphdr)));
 
-    send_to_link(interface, packet, len);
+void make_checksum(char *packet, int len)
+{
+    struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
+    ip_hdr->check = 0;
+    ip_hdr->check = checksum((void *)ip_hdr, sizeof(struct iphdr));
 }
 
 int ttl_handler(char *packet, int len, int interface)
@@ -63,7 +61,8 @@ int ttl_handler(char *packet, int len, int interface)
         printf("TTL expired\n");
         icmp_hdr->type = TIME_EXCEEDED;
         icmp_hdr->code = 0;
-        send_packet(icmp_hdr, ip_hdr, interface, packet, len);
+        make_checksum(packet, len);
+        send_to_link(interface, packet, len);
         return 1;
     }
     ip_hdr->ttl--;
@@ -100,7 +99,8 @@ RTableEntry rtable_handler(char *packet, int len, int interface, struct route_ta
         printf("No route to host\n");
         icmp_hdr->type = DEST_UNREACHABLE;
         icmp_hdr->code = 0;
-        send_packet(icmp_hdr, ip_hdr, interface, packet, len);
+        make_checksum(packet, len);
+        send_to_link(interface, packet, len);
         return NULL;
     }
 
@@ -196,6 +196,7 @@ int main(int argc, char *argv[])
         // set the mac address of the next hop
         memcpy(eth_hdr->ether_dhost, arp_entry->mac, 6);
 
+        make_checksum(buf, len);
         send_to_link(entry->interface, buf, len);
 
         // if the packet is ICMP

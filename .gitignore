@@ -5,6 +5,10 @@ lib/*.o
 
 # Executables
 router
+router_*
+
 
 # Other files
 __pycache__
+
+hosts_output/
