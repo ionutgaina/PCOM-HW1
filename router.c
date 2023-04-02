@@ -3,6 +3,10 @@
 #include "protocols.h"
 #include "rtable.h"
 
+struct iphdr *ip_hdr;
+struct icmphdr *icmp_hdr;
+struct ether_header *eth_hdr;
+
 int icmp_handler(char *packet, int len, int interface)
 {
     // struct ether_header *eth_hdr = (struct ether_header *)packet;
@@ -16,7 +20,6 @@ int icmp_handler(char *packet, int len, int interface)
 int check_checksum(char *packet, int len)
 {
     // checksum for ip
-    struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
     uint16_t old_checksum = ntohs(ip_hdr->check);
     ip_hdr->check = 0;
     uint16_t new_checksum = checksum((void *)ip_hdr, sizeof(struct iphdr));
@@ -27,7 +30,7 @@ int check_checksum(char *packet, int len)
         return 1;
     }
 
-    // checksum for icmp
+    // // checksum for icmp
     // struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
     // old_checksum = ntohs(icmp_hdr->checksum);
     // icmp_hdr->checksum = 0;
@@ -44,18 +47,18 @@ int check_checksum(char *packet, int len)
 }
 
 
-void make_checksum(char *packet, int len)
+void make_checksum()
 {
-    struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
     ip_hdr->check = 0;
     ip_hdr->check = checksum((void *)ip_hdr, sizeof(struct iphdr));
+
+    // struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
+    // icmp_hdr->checksum = 0;
+    // icmp_hdr->checksum = checksum((void *)icmp_hdr, sizeof(struct icmphdr));
 }
 
 int ttl_handler(char *packet, int len, int interface)
 {
-    struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
-    struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
-
     if (ip_hdr->ttl <= 1)
     {
         printf("TTL expired\n");
@@ -66,14 +69,13 @@ int ttl_handler(char *packet, int len, int interface)
         return 1;
     }
     ip_hdr->ttl--;
+    make_checksum(packet, len);
     return 0;
 }
 
 // it will return an entry from the routing table
 RTableEntry rtable_handler(char *packet, int len, int interface, struct route_table_entry *rtable, int rtable_len)
 {
-    struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
-    struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
 
     RTableEntry entry = NULL;
 
@@ -152,9 +154,9 @@ int main(int argc, char *argv[])
         DIE(interface <
                 0,
             "recv_from_any_links");
-        struct ether_header *eth_hdr = (struct ether_header *)buf;
-        struct iphdr
-            *ip_hdr = (struct iphdr *)(buf + sizeof(struct ether_header));
+        eth_hdr = (struct ether_header *)buf;
+        ip_hdr = (struct iphdr *)(buf + sizeof(struct ether_header));
+        icmp_hdr = (struct icmphdr *)(buf + sizeof(struct ether_header) + sizeof(struct iphdr));
 
         // print ether_header
         printf("dest mac: %hhn\n src mac: %hhn\n ether_type: %d\n", eth_hdr->ether_dhost, eth_hdr->ether_shost,
@@ -168,8 +170,8 @@ int main(int argc, char *argv[])
         inet_aton(get_interface_ip(interface), &address);
 
         // verify if the packet is IPv4 or ARP
-        if (eth_hdr->ether_type != htons(IPv4) && eth_hdr->ether_type != htons(ARP))
-            continue;
+        // if (eth_hdr->ether_type != htons(IPv4) && eth_hdr->ether_type != htons(ARP))
+        //     continue;
 
         // check the checksum
         if (check_checksum(buf, len))
