@@ -11,4 +11,6 @@ router_*
 # Other files
 __pycache__
 
+hosts_output/*  
 hosts_output/
+

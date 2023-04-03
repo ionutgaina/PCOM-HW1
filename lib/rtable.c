@@ -19,27 +19,18 @@ TNode new_trie_node(RTableEntry data)
 
 void insert(TNode root, RTableEntry data)
 {
-  if (root == NULL)
-  {
-    root = new_trie_node(data);
-    return;
-  }
-
-  // 192.168.0.0
-  // 11111111.11111111.00000000.00000000
-  // 255.255.255.0
-  // 11111111.11111111.11111111.00000000
-  
-  // calculate Longest Prefix Mask
-  const u_int32_t LPM = data->prefix & data->mask; // 11111111.11111111.00000000.00000000
-
   // we will use this bit to check if the bit is set or not from the left to the right
   u_int32_t bit = 1u << 31; //
 
-  while (bit & data->mask)
+  if (data->prefix == 0)
+  {
+    return;
+  }
+
+  while (bit & htonl(data->mask))
   {
     // if the bit is set
-    if (bit & LPM)
+    if (bit & htonl(data->prefix))
     {
       // if the right node is null, we create a new node
       if (root->right == NULL)
@@ -79,6 +70,7 @@ RTableEntry search(TNode root, u_int32_t address)
   u_int32_t bit = 1u << 31;
   RTableEntry data = NULL;
 
+
   while (bit)
   {
 
@@ -87,7 +79,7 @@ RTableEntry search(TNode root, u_int32_t address)
       data = root->data;
     }
 
-    if (bit & address)
+    if (bit & htonl(address))
     {
       if (root->right == NULL)
       {

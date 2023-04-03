@@ -26,32 +26,18 @@ int check_checksum(char *packet, int len)
         return 1;
     }
 
-    // // checksum for icmp
-    // struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
-    // old_checksum = ntohs(icmp_hdr->checksum);
-    // icmp_hdr->checksum = 0;
-    // new_checksum = checksum((void *)icmp_hdr, sizeof(struct icmphdr));
-
-    // if (old_checksum != new_checksum)
-    // {
-    //     printf("%d %d\n", old_checksum, new_checksum);
-    //     printf("Checksum error for icmp\n");
-    //     return 1;
-    // }
+    // TODO checksum for icmp
 
     return 0;
 }
 
 void make_checksum()
 {
+    // it s working the checksum for ip
     ip_hdr->check = 0;
     ip_hdr->check = htons(checksum((void *)ip_hdr, sizeof(struct iphdr)));
 
-    // icmp_hdr->type = 0;
-    // icmp_hdr->code = 0;
-    // icmp_hdr->checksum = 0;
-    // icmp_hdr->checksum = checksum((void *)icmp_hdr, sizeof(struct icmphdr));
-    printf("checksum %d\n", ip_hdr->check);
+    // TO DO checksum for icmp
 }
 
 int ttl_handler(char *packet, int len, int interface)
@@ -65,35 +51,15 @@ int ttl_handler(char *packet, int len, int interface)
         send_to_link(interface, packet, len);
         return 1;
     }
-    --ip_hdr->ttl;
+    ip_hdr->ttl--;
     make_checksum();
-    printf("checksum %d\n", ip_hdr->check);
     return 0;
 }
 
-// it will return an entry from the routing table
-RTableEntry rtable_handler(char *packet, int len, int interface, struct route_table_entry *rtable, int rtable_len)
+RTableEntry rtable_handler(char *packet, int len, int interface, TNode trie)
 {
-
-    RTableEntry entry = NULL;
-
-    for (int i = 0; i < rtable_len; i++)
-    {
-        if ((ip_hdr->daddr & rtable[i].mask) == rtable[i].prefix)
-        {
-            if (entry == NULL)
-            {
-                entry = &rtable[i];
-            }
-            else
-            {
-                if (entry->mask < rtable[i].mask)
-                {
-                    entry = &rtable[i];
-                }
-            }
-        }
-    }
+    printf("Searching for route to host %d\n", ip_hdr->daddr);
+    RTableEntry entry = search(trie, ip_hdr->daddr);
     if (entry == NULL)
     {
         printf("No route to host\n");
@@ -105,6 +71,7 @@ RTableEntry rtable_handler(char *packet, int len, int interface, struct route_ta
     }
 
     printf("Found route to host %d\n", entry->prefix);
+    printf("Next hop: %d\n", entry->next_hop);
     return entry;
 }
 
@@ -132,12 +99,12 @@ int main(int argc, char *argv[])
     struct route_table_entry *rtable = malloc(sizeof(struct route_table_entry) * MAX_RTABLE_ENTRIES);
     int rtable_len = read_rtable(argv[1], rtable);
 
-    // TNode rtable_trie = new_trie();
+    TNode rtable_trie = new_trie();
 
-    // for (int i = 0; i < rtable_len; i++)
-    // {
-    //     insert(rtable_trie, &rtable[i]);
-    // }
+    for (int i = 0; i < rtable_len; i++)
+    {
+        insert(rtable_trie, &rtable[i]);
+    }
     // read the mac table from the file
 
     struct arp_entry *arp_table = malloc(sizeof(struct arp_entry) * MAX_ARP_TABLE_ENTRIES);
@@ -174,7 +141,7 @@ int main(int argc, char *argv[])
         if (ttl_handler(buf, len, interface))
             continue;
 
-        RTableEntry entry = rtable_handler(buf, len, interface, rtable, rtable_len);
+        RTableEntry entry = rtable_handler(buf, len, interface, rtable_trie);
 
         if (entry == NULL)
             continue;
@@ -191,7 +158,7 @@ int main(int argc, char *argv[])
         // set the mac address of the next hop
         memcpy(eth_hdr->ether_dhost, arp_entry->mac, 6);
 
-        printf("checksum %d\n", ip_hdr->check);
+        // send the packet to the next hop
         send_to_link(entry->interface, buf, len);
 
         // if the packet is ICMP
