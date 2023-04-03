@@ -1,0 +1,381 @@
+Setting up interface: rr-0-1
+Setting up interface: r-0
+Setting up interface: r-1
+dest mac: 
+ src mac: 
+tot_len: 5120
+ ttl: 63
+ check: 63380
+ saddr: 33597632
+ daddr: 33794240
+checksum 38136
+checksum 38136
+Found route to host 239808
+checksum 38136
+dest mac: 
+ src mac: 
+tot_len: 8
+ ttl: 222
+ check: 48879
+ saddr: -1463811328
+ daddr: 515
+Checksum error for iphdr
+dest mac: 
+ src mac: 
+tot_len: 8
+ ttl: 222
+ check: 51437
+ saddr: -1463811327
+ daddr: -1377959677
+Checksum error for iphdr
+dest mac: 
+ src mac: 
+tot_len: 12288
+ ttl: 64
+ check: 13819
+ saddr: 33794240
+ daddr: 33597632
+checksum 64310
+checksum 64310
+Found route to host 43200
+checksum 64310
+dest mac: 
+ src mac: 
+tot_len: 5120
+ ttl: 64
+ check: 63380
+ saddr: 33728704
+ daddr: 33597632
+checksum 38136
+checksum 38136
+Found route to host 43200
+checksum 38136
+dest mac: 
+ src mac: 
+tot_len: 12288
+ ttl: 63
+ check: 41347
+ saddr: 33597632
+ daddr: 33728704
+checksum 33698
+checksum 33698
+Found route to host 174272
+checksum 33698
+dest mac: 
+ src mac: 
+tot_len: 5120
+ ttl: 64
+ check: 63124
+ saddr: 33728704
+ daddr: 33663168
+checksum 38135
+checksum 38135
+Found route to host 108736
+checksum 38135
+dest mac: 
+ src mac: 
+tot_len: 12288
+ ttl: 63
+ check: 41968
+ saddr: 33663168
+ daddr: 33728704
+checksum 61604
+checksum 61604
+Found route to host 174272
+checksum 61604
+dest mac: 
+ src mac: 
+tot_len: 5120
+ ttl: 64
+ check: 62612
+ saddr: 33728704
+ daddr: 33794240
+checksum 38133
+checksum 38133
+Found route to host 239808
+checksum 38133
+dest mac: 
+ src mac: 
+tot_len: 12288
+ ttl: 64
+ check: 14637
+ saddr: 33794240
+ daddr: 33728704
+checksum 11578
+checksum 11578
+Found route to host 174272
+checksum 11578
+dest mac: 
+ src mac: 
+tot_len: 8
+ ttl: 222
+ check: 48879
+ saddr: -1463811328
+ daddr: 515
+Checksum error for iphdr
+dest mac: 
+ src mac: 
+tot_len: 8
+ ttl: 222
+ check: 51437
+ saddr: -1463811327
+ daddr: -1377959677
+Checksum error for iphdr
+dest mac: 
+ src mac: 
+tot_len: 5120
+ ttl: 64
+ check: 62868
+ saddr: 33794240
+ daddr: 33663168
+checksum 38134
+checksum 38134
+Found route to host 108736
+checksum 38134
+dest mac: 
+ src mac: 
+tot_len: 12288
+ ttl: 63
+ check: 6833
+ saddr: 33663168
+ daddr: 33794240
+checksum 45339
+checksum 45339
+Found route to host 239808
+checksum 45339
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3886
+ saddr: 33794240
+ daddr: 33597632
+checksum 11792
+checksum 11792
+Found route to host 43200
+checksum 11792
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3873
+ saddr: 33794240
+ daddr: 33597632
+checksum 8464
+checksum 8464
+Found route to host 43200
+checksum 8464
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3871
+ saddr: 33794240
+ daddr: 33597632
+checksum 7952
+checksum 7952
+Found route to host 43200
+checksum 7952
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3866
+ saddr: 33794240
+ daddr: 33597632
+checksum 6672
+checksum 6672
+Found route to host 43200
+checksum 6672
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3857
+ saddr: 33794240
+ daddr: 33597632
+checksum 4368
+checksum 4368
+Found route to host 43200
+checksum 4368
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3856
+ saddr: 33794240
+ daddr: 33597632
+checksum 4112
+checksum 4112
+Found route to host 43200
+checksum 4112
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3852
+ saddr: 33794240
+ daddr: 33597632
+checksum 3088
+checksum 3088
+Found route to host 43200
+checksum 3088
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3843
+ saddr: 33794240
+ daddr: 33597632
+checksum 784
+checksum 784
+Found route to host 43200
+checksum 784
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3830
+ saddr: 33794240
+ daddr: 33597632
+checksum 62991
+checksum 62991
+Found route to host 43200
+checksum 62991
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 63
+ check: 63371
+ saddr: 33597632
+ daddr: 33794240
+checksum 35832
+checksum 35832
+Found route to host 239808
+checksum 35832
+dest mac: 
+ src mac: 
+tot_len: 7168
+ ttl: 64
+ check: 3824
+ saddr: 33794240
+ daddr: 33597632
+checksum 61455
+checksum 61455
+Found route to host 43200
+checksum 61455
+dest mac: 
+ src mac: 
+tot_len: 8
+ ttl: 222
+ check: 48879
+ saddr: -1463811328
+ daddr: 515
+Checksum error for iphdr
+dest mac: 
+ src mac: 
+tot_len: 8
+ ttl: 222
+ check: 51437
+ saddr: -1463811327
+ daddr: -1377959677
+Checksum error for iphdr

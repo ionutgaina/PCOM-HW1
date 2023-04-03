@@ -9,10 +9,6 @@ struct ether_header *eth_hdr;
 
 int icmp_handler(char *packet, int len, int interface)
 {
-    // struct ether_header *eth_hdr = (struct ether_header *)packet;
-    // struct iphdr *ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
-    // struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
-
     printf("ICMP packet received\n");
     return 0;
 }
@@ -46,15 +42,16 @@ int check_checksum(char *packet, int len)
     return 0;
 }
 
-
 void make_checksum()
 {
     ip_hdr->check = 0;
-    ip_hdr->check = checksum((void *)ip_hdr, sizeof(struct iphdr));
+    ip_hdr->check = htons(checksum((void *)ip_hdr, sizeof(struct iphdr)));
 
-    // struct icmphdr *icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
+    // icmp_hdr->type = 0;
+    // icmp_hdr->code = 0;
     // icmp_hdr->checksum = 0;
     // icmp_hdr->checksum = checksum((void *)icmp_hdr, sizeof(struct icmphdr));
+    printf("checksum %d\n", ip_hdr->check);
 }
 
 int ttl_handler(char *packet, int len, int interface)
@@ -64,12 +61,13 @@ int ttl_handler(char *packet, int len, int interface)
         printf("TTL expired\n");
         icmp_hdr->type = TIME_EXCEEDED;
         icmp_hdr->code = 0;
-        make_checksum(packet, len);
+        make_checksum();
         send_to_link(interface, packet, len);
         return 1;
     }
-    ip_hdr->ttl--;
-    make_checksum(packet, len);
+    --ip_hdr->ttl;
+    make_checksum();
+    printf("checksum %d\n", ip_hdr->check);
     return 0;
 }
 
@@ -101,7 +99,7 @@ RTableEntry rtable_handler(char *packet, int len, int interface, struct route_ta
         printf("No route to host\n");
         icmp_hdr->type = DEST_UNREACHABLE;
         icmp_hdr->code = 0;
-        make_checksum(packet, len);
+        make_checksum();
         send_to_link(interface, packet, len);
         return NULL;
     }
@@ -159,19 +157,14 @@ int main(int argc, char *argv[])
         icmp_hdr = (struct icmphdr *)(buf + sizeof(struct ether_header) + sizeof(struct iphdr));
 
         // print ether_header
-        printf("dest mac: %hhn\n src mac: %hhn\n ether_type: %d\n", eth_hdr->ether_dhost, eth_hdr->ether_shost,
-               eth_hdr->ether_type);
+        printf("dest mac: %hhn\n src mac: %hhn\n", eth_hdr->ether_dhost, eth_hdr->ether_shost);
 
         // print iphdr header
-        printf("tot_len: %d\n id: %d\n ttl: %d\n check: %d\n saddr: %d\n daddr: %d\n", ip_hdr->tot_len,
-               ip_hdr->id, ip_hdr->ttl, htons(ip_hdr->check), ip_hdr->saddr, ip_hdr->daddr);
+        printf("tot_len: %d\n ttl: %d\n check: %d\n saddr: %d\n daddr: %d\n", ip_hdr->tot_len,
+               ip_hdr->ttl, htons(ip_hdr->check), ip_hdr->saddr, ip_hdr->daddr);
 
         // get the ip address of the router
         inet_aton(get_interface_ip(interface), &address);
-
-        // verify if the packet is IPv4 or ARP
-        // if (eth_hdr->ether_type != htons(IPv4) && eth_hdr->ether_type != htons(ARP))
-        //     continue;
 
         // check the checksum
         if (check_checksum(buf, len))
@@ -198,7 +191,7 @@ int main(int argc, char *argv[])
         // set the mac address of the next hop
         memcpy(eth_hdr->ether_dhost, arp_entry->mac, 6);
 
-        make_checksum(buf, len);
+        printf("checksum %d\n", ip_hdr->check);
         send_to_link(entry->interface, buf, len);
 
         // if the packet is ICMP
