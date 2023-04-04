@@ -12,6 +12,7 @@
 #define MAX_PACKET_LEN 1600
 #define ROUTER_NUM_INTERFACES 3
 #define MAX_ARP_TABLE_ENTRIES 100
+#define MAC_LEN 6
 
 // Ethernet
 #define IPv4 0x0800

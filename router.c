@@ -6,6 +6,7 @@
 struct iphdr *ip_hdr;
 struct icmphdr *icmp_hdr;
 struct ether_header *eth_hdr;
+struct in_addr address;
 
 int icmp_handler(char *packet, int len, int interface)
 {
@@ -38,17 +39,41 @@ void make_checksum()
     ip_hdr->check = htons(checksum((void *)ip_hdr, sizeof(struct iphdr)));
 
     // TO DO checksum for icmp
+    if (ip_hdr->protocol == IPPROTO_ICMP)
+    {
+        icmp_hdr->checksum = 0;
+        icmp_hdr->checksum = htons(checksum((void *)icmp_hdr, sizeof(struct icmphdr)));
+    }
 }
 
 int ttl_handler(char *packet, int len, int interface)
 {
     if (ip_hdr->ttl <= 1)
     {
+
         printf("TTL expired\n");
+
+        // create eth
+        memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, 6);
+        uint8_t aux_mac[6];
+        get_interface_mac(interface, aux_mac);
+        memcpy(eth_hdr->ether_shost, aux_mac, 6);
+
+        // create ip
+        ip_hdr->tot_len = htons(sizeof(struct iphdr) + sizeof(struct icmphdr));
+        ip_hdr->protocol = IPPROTO_ICMP;
+        struct in_addr aux_ip;
+        memcpy(&aux_ip, &ip_hdr->daddr, sizeof(struct in_addr));
+        memcpy(&ip_hdr->daddr, &ip_hdr->saddr, sizeof(struct in_addr));
+        memcpy(&ip_hdr->saddr, &aux_ip, sizeof(struct in_addr));
+        ip_hdr->ttl = 64;
+
+        // create icmp
         icmp_hdr->type = TIME_EXCEEDED;
         icmp_hdr->code = 0;
+
         make_checksum();
-        send_to_link(interface, packet, len);
+        send_to_link(interface, packet, len + sizeof(struct icmphdr));
         return 1;
     }
     ip_hdr->ttl--;
@@ -63,10 +88,29 @@ RTableEntry rtable_handler(char *packet, int len, int interface, TNode trie)
     if (entry == NULL)
     {
         printf("No route to host\n");
+
+        // create eth
+        uint8_t aux_mac[6]; 
+        memcpy(aux_mac, eth_hdr->ether_dhost, 6);
+        memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, 6);
+        memcpy(eth_hdr->ether_shost, aux_mac, 6);
+
+        // create ip
+        ip_hdr->tot_len = htons(sizeof(struct iphdr) + sizeof(struct icmphdr));
+        ip_hdr->protocol = IPPROTO_ICMP;
+        struct in_addr aux_ip;
+        memcpy(&aux_ip, &ip_hdr->daddr, sizeof(struct in_addr));
+        // adresa sursa trebuie sa fie a mea
+        memcpy(&ip_hdr->daddr, &ip_hdr->saddr, sizeof(struct in_addr));
+        memcpy(&ip_hdr->saddr, &address, sizeof(struct in_addr));
+        ip_hdr->ttl = 64;
+
+        // create icmp
         icmp_hdr->type = DEST_UNREACHABLE;
         icmp_hdr->code = 0;
+
         make_checksum();
-        send_to_link(interface, packet, len);
+        send_to_link(interface, packet, len + sizeof(struct icmphdr));
         return NULL;
     }
 
@@ -110,7 +154,6 @@ int main(int argc, char *argv[])
     struct arp_entry *arp_table = malloc(sizeof(struct arp_entry) * MAX_ARP_TABLE_ENTRIES);
     int arp_table_len = parse_arp_table("./arp_table.txt", arp_table);
 
-    struct in_addr address;
     while (1)
     {
         int interface;
@@ -133,6 +176,7 @@ int main(int argc, char *argv[])
         // get the ip address of the router
         inet_aton(get_interface_ip(interface), &address);
 
+        // if ipv4 or arp
         // check the checksum
         if (check_checksum(buf, len))
             continue;
@@ -140,6 +184,7 @@ int main(int argc, char *argv[])
         // decrement the ttl
         if (ttl_handler(buf, len, interface))
             continue;
+        // pana aici
 
         RTableEntry entry = rtable_handler(buf, len, interface, rtable_trie);
 
