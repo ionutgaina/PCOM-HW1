@@ -27,8 +27,6 @@ int check_checksum(char *packet, int len)
         return 1;
     }
 
-    // TODO checksum for icmp
-
     return 0;
 }
 
@@ -54,10 +52,10 @@ int ttl_handler(char *packet, int len, int interface)
         printf("TTL expired\n");
 
         // create eth
-        memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, 6);
-        uint8_t aux_mac[6];
+        memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, MAC_LEN);
+        uint8_t aux_mac[MAC_LEN];
         get_interface_mac(interface, aux_mac);
-        memcpy(eth_hdr->ether_shost, aux_mac, 6);
+        memcpy(eth_hdr->ether_shost, aux_mac, MAC_LEN);
 
         // create ip
         ip_hdr->tot_len = htons(sizeof(struct iphdr) + sizeof(struct icmphdr));
@@ -90,17 +88,16 @@ RTableEntry rtable_handler(char *packet, int len, int interface, TNode trie)
         printf("No route to host\n");
 
         // create eth
-        uint8_t aux_mac[6]; 
-        memcpy(aux_mac, eth_hdr->ether_dhost, 6);
-        memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, 6);
-        memcpy(eth_hdr->ether_shost, aux_mac, 6);
+        uint8_t aux_mac[MAC_LEN];
+        memcpy(aux_mac, eth_hdr->ether_dhost, MAC_LEN);
+        memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, MAC_LEN);
+        memcpy(eth_hdr->ether_shost, aux_mac, MAC_LEN);
 
         // create ip
         ip_hdr->tot_len = htons(sizeof(struct iphdr) + sizeof(struct icmphdr));
         ip_hdr->protocol = IPPROTO_ICMP;
         struct in_addr aux_ip;
         memcpy(&aux_ip, &ip_hdr->daddr, sizeof(struct in_addr));
-        // adresa sursa trebuie sa fie a mea
         memcpy(&ip_hdr->daddr, &ip_hdr->saddr, sizeof(struct in_addr));
         memcpy(&ip_hdr->saddr, &address, sizeof(struct in_addr));
         ip_hdr->ttl = 64;
@@ -117,6 +114,30 @@ RTableEntry rtable_handler(char *packet, int len, int interface, TNode trie)
     printf("Found route to host %d\n", entry->prefix);
     printf("Next hop: %d\n", entry->next_hop);
     return entry;
+}
+
+void echo_reply_handler(char *packet, int len, int interface)
+{
+    printf("Echo reply packet received\n");
+
+    // create eth
+    uint8_t aux_mac[MAC_LEN];
+    memcpy(aux_mac, eth_hdr->ether_dhost, MAC_LEN);
+    memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, MAC_LEN);
+    memcpy(eth_hdr->ether_shost, aux_mac, MAC_LEN);
+
+    struct in_addr aux_ip;
+    memcpy(&aux_ip, &ip_hdr->daddr, sizeof(struct in_addr));
+    memcpy(&ip_hdr->daddr, &ip_hdr->saddr, sizeof(struct in_addr));
+    memcpy(&ip_hdr->saddr, &aux_ip, sizeof(struct in_addr));
+    ip_hdr->ttl = 64;
+
+    // create icmp
+    icmp_hdr->type = ECHO_REPLY;
+    icmp_hdr->code = 0;
+
+    make_checksum();
+    send_to_link(interface, packet, len);
 }
 
 struct arp_entry *get_arp_entry(uint32_t address, struct arp_entry *arp_table, int arp_table_len)
@@ -166,12 +187,12 @@ int main(int argc, char *argv[])
         ip_hdr = (struct iphdr *)(buf + sizeof(struct ether_header));
         icmp_hdr = (struct icmphdr *)(buf + sizeof(struct ether_header) + sizeof(struct iphdr));
 
-        // print ether_header
-        printf("dest mac: %hhn\n src mac: %hhn\n", eth_hdr->ether_dhost, eth_hdr->ether_shost);
+        // // print ether_header
+        // printf("dest mac: %hhn\n src mac: %hhn\n", eth_hdr->ether_dhost, eth_hdr->ether_shost);
 
-        // print iphdr header
-        printf("tot_len: %d\n ttl: %d\n check: %d\n saddr: %d\n daddr: %d\n", ip_hdr->tot_len,
-               ip_hdr->ttl, htons(ip_hdr->check), ip_hdr->saddr, ip_hdr->daddr);
+        // // print iphdr header
+        // printf("tot_len: %d\n ttl: %d\n check: %d\n saddr: %d\n daddr: %d\n", ip_hdr->tot_len,
+        //        ip_hdr->ttl, htons(ip_hdr->check), ip_hdr->saddr, ip_hdr->daddr);
 
         // get the ip address of the router
         inet_aton(get_interface_ip(interface), &address);
@@ -184,7 +205,18 @@ int main(int argc, char *argv[])
         // decrement the ttl
         if (ttl_handler(buf, len, interface))
             continue;
-        // pana aici
+
+        printf("address: %u\n", ntohl(address.s_addr));
+        printf("ip_hdr->daddr: %u\n", ntohl(ip_hdr->daddr));
+
+        if (ntohl(ip_hdr->daddr) == ntohl(address.s_addr))
+        {
+            // echo reply
+            printf("Packet from me\n");
+            echo_reply_handler(buf, len, interface);
+            continue;
+        }
+
 
         RTableEntry entry = rtable_handler(buf, len, interface, rtable_trie);
 
@@ -201,7 +233,7 @@ int main(int argc, char *argv[])
         }
 
         // set the mac address of the next hop
-        memcpy(eth_hdr->ether_dhost, arp_entry->mac, 6);
+        memcpy(eth_hdr->ether_dhost, arp_entry->mac, MAC_LEN);
 
         // send the packet to the next hop
         send_to_link(entry->interface, buf, len);

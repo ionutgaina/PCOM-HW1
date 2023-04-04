@@ -21,6 +21,8 @@
 // ICMP
 #define TIME_EXCEEDED 11
 #define DEST_UNREACHABLE 3
+#define ECHO_REQUEST 8
+#define ECHO_REPLY 0
 
 
 

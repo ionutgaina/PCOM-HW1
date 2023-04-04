@@ -2,7 +2,7 @@
 -- Packet
 ###[ Ethernet ]### 
   dst       = de:ad:be:ef:00:01
-  src       = 15:ad:be:ef:00:00
+  src       = de:ad:be:ef:00:00
   type      = IPv4
 ###[ IP ]### 
      version   = 4
@@ -61,12 +61,12 @@
      ihl       = 5
      tos       = 0xc0
      len       = 48
-     id        = 33508
+     id        = 52518
      flags     = 
      frag      = 0
      ttl       = 64
      proto     = icmp
-     chksum    = 0x74d4
+     chksum    = 0x2a92
      src       = 192.168.1.2
      dst       = 192.168.0.2
      \options   \
