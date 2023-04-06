@@ -1,323 +1,35 @@
 Setting up interface: rr-0-1
 Setting up interface: r-0
 Setting up interface: r-1
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-Checksum error for iphdr
-Checksum error for iphdr
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-Checksum error for iphdr
-Checksum error for iphdr
-Checksum error for iphdr
-address: 3232235521
-ip_hdr->daddr: 3232236290
+am primit ceva
 Searching for route to host 33794240
 Found route to host 239808
 Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-Checksum error for iphdr
-Checksum error for iphdr
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236034
-Searching for route to host 33728704
-Found route to host 174272
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232236034
-Searching for route to host 33728704
-Found route to host 174272
-Next hop: 33620160
-Checksum error for iphdr
-Checksum error for iphdr
-address: 3221225729
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232236290
+ip adaugat in coada: 33794240
+Send ARP request
+am primit ceva
+Add entry to arp table
+Add entry to arp table
+ip: 33620160
+Send packets from queue
+ip scos din coada: 33794240
 Searching for route to host 33794240
 Found route to host 239808
 Next hop: 33620160
-address: 3232235521
-ip_hdr->daddr: 3232235521
-Packet from me
-Echo reply packet received
-TTL expired
-address: 3232235521
-ip_hdr->daddr: 167772161
-Searching for route to host 16777226
-No route to host
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
+am primit ceva
+ARP reply send
+am primit ceva
 Searching for route to host 33597632
 Found route to host 43200
 Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232235778
-Searching for route to host 33663168
-Found route to host 108736
-Next hop: 33663168
-address: 3232235777
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-Checksum error for iphdr
-Checksum error for iphdr
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
-Searching for route to host 33597632
-Found route to host 43200
-Next hop: 33597632
-address: 3232235521
-ip_hdr->daddr: 3232236290
-Searching for route to host 33794240
-Found route to host 239808
-Next hop: 33620160
-address: 3221225729
-ip_hdr->daddr: 3232235522
+ip adaugat in coada: 33597632
+Send ARP request
+am primit ceva
+Add entry to arp table
+Add entry to arp table
+ip: 33597632
+Send packets from queue
+ip scos din coada: 33597632
 Searching for route to host 33597632
 Found route to host 43200
 Next hop: 33597632
