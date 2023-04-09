@@ -16,7 +16,6 @@ int icmp_handler(char *packet, int len, int interface)
 
 int check_checksum(char *packet, int len)
 {
-    // checksum for ip
     uint16_t old_checksum = ntohs(ip_hdr->check);
     ip_hdr->check = 0;
     uint16_t new_checksum = checksum((void *)ip_hdr, sizeof(struct iphdr));
@@ -32,11 +31,11 @@ int check_checksum(char *packet, int len)
 
 void make_checksum()
 {
-    // it s working the checksum for ip
+    // checksum for ip
     ip_hdr->check = 0;
     ip_hdr->check = htons(checksum((void *)ip_hdr, sizeof(struct iphdr)));
 
-    // TO DO checksum for icmp
+    // checksum for icmp
     if (ip_hdr->protocol == IPPROTO_ICMP)
     {
         icmp_hdr->checksum = 0;
@@ -107,7 +106,6 @@ RTableEntry rtable_handler(char *packet, int interface, TNode trie)
 
         // create ip
         ip_hdr->protocol = IPPROTO_ICMP;
-        // create ip
         ip_hdr->tot_len = htons(data_len + sizeof(struct iphdr) + sizeof(struct icmphdr));
         ip_hdr->protocol = IPPROTO_ICMP;
         memcpy(&ip_hdr->daddr, &ip_hdr->saddr, sizeof(struct in_addr));
@@ -147,6 +145,7 @@ void echo_reply_handler(char *packet, int len, int interface)
     memcpy(eth_hdr->ether_dhost, eth_hdr->ether_shost, MAC_LEN);
     memcpy(eth_hdr->ether_shost, aux_mac, MAC_LEN);
 
+    // create ip
     struct in_addr aux_ip;
     memcpy(&aux_ip, &ip_hdr->daddr, sizeof(struct in_addr));
     memcpy(&ip_hdr->daddr, &ip_hdr->saddr, sizeof(struct in_addr));
@@ -181,11 +180,11 @@ void arp_handler(RTableEntry entry)
     struct arp_header *arp_hdr = (struct arp_header *)(arp_packet + sizeof(struct ether_header));
 
     // create eth
-
     uint8_t broadcast_mac[MAC_LEN] = {255, 255, 255, 255, 255, 255};
 
-    memcpy(arp_eth_hdr->ether_dhost, broadcast_mac , MAC_LEN);
-    memcpy(arp_eth_hdr->ether_shost, eth_hdr->ether_dhost, MAC_LEN);
+    memcpy(arp_eth_hdr->ether_dhost, broadcast_mac, MAC_LEN);
+    get_interface_mac(entry->interface, arp_eth_hdr->ether_shost);
+
     arp_eth_hdr->ether_type = htons(ARP);
 
     // create arp
@@ -194,11 +193,14 @@ void arp_handler(RTableEntry entry)
     arp_hdr->hlen = MAC_LEN;
     arp_hdr->plen = 4;
     arp_hdr->op = htons(1);
-    memcpy(arp_hdr->sha, eth_hdr->ether_dhost, MAC_LEN);
-    memcpy(&arp_hdr->spa, &address.s_addr, sizeof(in_addr_t));
+    get_interface_mac(entry->interface, arp_hdr->sha);
+
+    struct in_addr my_address;
+    inet_aton(get_interface_ip(entry->interface), &my_address);
+    memcpy(&arp_hdr->spa, &my_address.s_addr, sizeof(uint32_t));
 
     memset(arp_hdr->tha, 0, MAC_LEN);
-    memcpy(&arp_hdr->tpa, &entry->next_hop, sizeof(struct in_addr));
+    memcpy(&arp_hdr->tpa, &entry->next_hop, sizeof(uint32_t));
 
     printf("Send ARP request\n");
     send_to_link(entry->interface, arp_packet, sizeof(struct ether_header) + sizeof(struct arp_header));
@@ -221,7 +223,6 @@ int main(int argc, char *argv[])
     {
         insert(rtable_trie, &rtable[i]);
     }
-    // read the mac table from the file
 
     // create arp table
     struct arp_entry *arp_table = malloc(sizeof(struct arp_entry) * MAX_ARP_TABLE_ENTRIES);
@@ -250,7 +251,6 @@ int main(int argc, char *argv[])
         // get the ip address of the router
         inet_aton(get_interface_ip(interface), &address);
 
-        // if ipv4 or arp
         struct arp_entry *arp_entry = NULL;
         RTableEntry entry = NULL;
         printf("am primit ceva\n");
@@ -283,28 +283,28 @@ int main(int argc, char *argv[])
         }
         else
         {
-            // if the arp packet is for me
-            if (ntohl(arp_hdr->tpa) == ntohl(address.s_addr))
-            {
-                // arp reply
-                printf("ARP reply send\n");
-                arp_hdr->op = htons(2);
-
-                memcpy(arp_hdr->tha, arp_hdr->sha, MAC_LEN);
-                get_interface_mac(interface, arp_hdr->sha);
-
-                memcpy(&arp_hdr->tpa, &arp_hdr->spa, sizeof(uint32_t));
-                memcpy(&arp_hdr->spa, &address.s_addr, sizeof(uint32_t));
-
-                // eth
-                memcpy(eth_hdr->ether_dhost, arp_hdr->tha, MAC_LEN);
-                memcpy(eth_hdr->ether_shost, arp_hdr->sha, MAC_LEN);
-                send_to_link(interface, buf, len);
-                continue;
-            } 
 
             if (ntohs(arp_hdr->op) == 1)
-            {   
+            {
+                // if the arp packet is for me
+                if (ntohl(arp_hdr->tpa) == ntohl(address.s_addr))
+                {
+                    // arp reply
+                    printf("ARP reply send\n");
+                    arp_hdr->op = htons(2);
+
+                    memcpy(arp_hdr->tha, arp_hdr->sha, MAC_LEN);
+                    get_interface_mac(interface, arp_hdr->sha);
+
+                    memcpy(&arp_hdr->tpa, &arp_hdr->spa, sizeof(uint32_t));
+                    memcpy(&arp_hdr->spa, &address.s_addr, sizeof(uint32_t));
+
+                    // eth
+                    memcpy(eth_hdr->ether_dhost, arp_hdr->tha, MAC_LEN);
+                    memcpy(eth_hdr->ether_shost, arp_hdr->sha, MAC_LEN);
+                    send_to_link(interface, buf, len);
+                    continue;
+                }
                 if (ntohl(arp_hdr->tpa) == ntohl(latest_address.s_addr))
                     continue;
                 // arp request
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
                 memcpy(&arp_hdr->spa, &address.s_addr, sizeof(uint32_t));
 
                 memcpy(arp_eth_hdr->ether_shost, arp_hdr->sha, MAC_LEN);
-                
+
                 send_to_link(interface, buf, len);
                 continue;
             }
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
             if (ntohs(arp_hdr->op) == 2)
             {
                 // add the entry to the arp table
-                printf("Add entry to arp table\n");
+                printf("Received reply\n");
                 arp_entry = malloc(sizeof(struct arp_entry));
                 arp_entry->ip = arp_hdr->spa;
                 memcpy(&arp_entry->mac, &arp_hdr->sha, MAC_LEN);
@@ -339,10 +339,9 @@ int main(int argc, char *argv[])
                     memcpy(arp_table[arp_table_len].mac, arp_entry->mac, MAC_LEN);
                     arp_table_len++;
                 }
-                
+
                 if (queue_empty(packet_queue))
                     continue;
-
 
                 printf("Send packets from queue\n");
                 // send the packets from the queue
@@ -353,16 +352,14 @@ int main(int argc, char *argv[])
 
                 ip_hdr = (struct iphdr *)(packet + sizeof(struct ether_header));
                 icmp_hdr = (struct icmphdr *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
-            
+
                 printf("ip scos din coada: %u\n", ip_hdr->daddr);
                 entry = rtable_handler(packet, interface, rtable_trie);
-                if (entry == NULL)
-                    continue;
-
+                get_interface_mac(entry->interface, eth_hdr->ether_shost);
                 send_to_link(entry->interface, packet, len);
                 continue;
             }
-            }
+        }
 
         if (arp_entry == NULL)
         {
